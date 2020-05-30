@@ -1,52 +1,43 @@
+import numpy
 import sys
 import argparse
-from argparse import ArgumentParser as argParse
+from argparse import ArgumentParser
 import math
 import re
-import pandas as pd
 from datetime import date
-import tkinter as tk
-from tkinter import filedialog
+from string import Template
 
-version = ('0.1')
+version = ('0.1.2')
 
-#Set defaults for option variables
-doDateReplace = True
+### command line argument parsing 
+##define the argument parser
+parser = ArgumentParser(description = 'Fix a Cockatrice .xml file exported from MSE')
+#first arg: file to be fixed
+parser.add_argument('File', help = 'the .xml file to fix')
+#second arg: file datestamping flag
+parser.add_argument('--date', '-d', dest='doDate', action='store_true', 
+                    help = 'datestamp the fixed file with today\'s date (default off)')
+#third arg: flag for version number (exits the script if used)
+parser.add_argument('--version', '-v', action='version',
+                    version = 'fixer v%(version)s')
+parser.add_argument('--outputname', '-o', dest='outputName',
+                    help = 'what to name the output (fixed) file. Defaults to set_fixed.xml')
 
-#
+#get the supplied arguments out of sys.argv and parse them
+rawArgs = sys.argv
+args = parser.parse_args(rawArgs)
 
-
-
-#get the current date
+#get the current date and put it in the correct string format
 today = date.today()
-#check if the set should be datestamped
-if len(sys.argv) >= 2:
-    date = today.strftime("%Y-%m-%d")
-    doDateReplace = True
-    else doDateReplace = False
-
-#
-#BEGIN PROCEDURE
-#
-
-#first find the set definition and fix it.
+date = today.strftime("%Y-%m-%d")
 
 
+# # # BEGIN TEST # # #
+dateTest = 'Today\'s date: ' + date + '\n'
+fileTest = 'Input file: ' + '\n'
+doDatestampTest = 'Datestamp?' + '\n'
 
-#then for each card (a string of text beginning in <card> and ending in </card>)
-
-#follow these steps:
-
-
-#first, split into chunks of info that can be manipulated together
-
-
-def cardInfo(info):
-
-
-    
-    return name, text, props, setInfo
-
-#function for a
-def addLine():
-    outFile = 1
+print dateTest
+print fileTest
+print doDatestampTest
+# # # END TEST # # #
