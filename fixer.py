@@ -45,7 +45,7 @@ def outputInit(): ## output initialization function
         Out.write('    <sets>\n')
         Out.write(newBlock)
         Out.write('    </sets>\n')
-    
+        Out.write('    <cards>\n')
     return setEnd
 
 def blockExtract(tag, loc): ## extracts an entire block (set or card)
@@ -82,8 +82,10 @@ def outputFin(): ## finalize the output file
     print("Successfully wrote " + outputFilename)
 
 def mainloop(cardsStart):
+    ### BEGIN TEST ###
     print('Mainloop started')
     print(cardsStart)
+    ### END TEST ###
 
 ### String templates for writing output
 
