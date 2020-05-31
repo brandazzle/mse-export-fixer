@@ -7,7 +7,11 @@ import re
 from datetime import date
 from string import Template
 
-version = ('0.1.3')
+version = ('0.1.4')
+
+#get the current date and put it in the correct string format
+today = date.today()
+date = today.strftime("%Y-%m-%d")
 
 ### command line argument parsing 
 ##define the argument parser
@@ -21,15 +25,16 @@ parser.add_argument('--date', '-d', dest='doDate', action='store_true',
 parser.add_argument('--version', '-v', action='version',
                     version='fixer v' + version)
 #fourth arg: what to name the output file
-parser.add_argument('--outputname', '-o', dest='outputName',
+parser.add_argument('--outputname', '-o', dest='outputName', default='set_fixed.xml',
                     help = 'what to name the output (fixed) file. Defaults to set_fixed.xml')
 
 ##parse the supplied arguments and extract their surplus value, like a capitalist
 argspace = parser.parse_args()
-inputFile = argspace.File
-outputName = argspace.outputName
+inputFilename = argspace.File
+outputFilename = argspace.outputName
 doDate = argspace.doDate
 
-#get the current date and put it in the correct string format
-today = date.today()
-date = today.strftime("%Y-%m-%d")
+##open the input file
+infile = open(inputFilename, "r")
+##open the output file in append mode
+outfile = open(outputFilename, "at")
