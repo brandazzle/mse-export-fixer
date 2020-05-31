@@ -8,7 +8,7 @@ from string import Template
 from itertools import islice
 from types import SimpleNamespace
 
-version = ('0.2.2')
+version = ('0.2.3')
 
 # get the current date and put it in the correct string format
 today = date.today()
@@ -45,12 +45,7 @@ def outputInit(): ## output initialization function
         Out.write('    <sets>\n')
         Out.write(newBlock)
         Out.write('    </sets>\n')
-    ### BEGIN TEST ###
-    print('Extracted block: ' + setBlock)
-    print('Set info follows')
-    print(setInfo)
-    print('New block: ' + newBlock)
-    ### END TEST ###
+    
     return setEnd
 
 def blockExtract(tag, loc): ## extracts an entire block (set or card)
@@ -80,6 +75,16 @@ def blockBuild(info, blocktype): ## build a new block using an info namespace
     block = 'test block'
     return block
 
+def outputFin(): ## finalize the output file
+    with open(outputFilename, "at") as Out:
+        Out.write('\n    </cards>\n')
+        Out.write('</cockatrice_carddatabase>')
+    print("Successfully wrote " + outputFilename)
+
+def mainloop(cardsStart):
+    print('Mainloop started')
+    print(cardsStart)
+
 ### String templates for writing output
 
 ## Tagged info templates
@@ -95,10 +100,13 @@ argspace = parser.parse_args()
 inputFilename = argspace.File
 outputFilename = argspace.outputName
 doDate = argspace.doDate
-outputInit()
+
+cardsLoc = outputInit() #conduct output initialization
+
+mainloop(cardsLoc)
 
 # # # BEGIN TEST # # #
-
+outputFin()
 # # # END TEST # # #
 
 
