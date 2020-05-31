@@ -1,4 +1,3 @@
-import numpy
 import sys
 import argparse
 from argparse import ArgumentParser
@@ -31,42 +30,71 @@ parser.add_argument('--outputname', '-o', dest='outputName', default='set_fixed.
 ### output initialization function
 def outputInit():
     # open the output file
-    out = open(outputFilename, "at")
+    Out = open(outputFilename, "wt")
     # write the xml general header
-    out.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+    Out.write('<?xml version="1.0" encoding="UTF-8"?>\n')
     # write the cockatrice xml header
-    out.write('<cockatrice_carddatabase version="4">\n')
-    
-    # open the input file 
-    
-    out.close()
+    Out.write('<cockatrice_carddatabase version="4">\n')
+    Out.close()
+    # call the unit info string extractor
+    setInfo = blockExtract('sets', 1)
 
 
+### extractor functions
+
+## extractor for an entire block (set, group of sets, or card)
+def blockExtract(tag, loc):
+    # search a string
+    In = open(inputFilename, "r")
+    
+    In.close()
 
 
 ### String templates for output
 
 ## Tagged info templates
 # template for a single pair of [tag, info]
-singleinfo = Template('<$tag>$info</$tag>')
+singleInfo = Template('<$tag>$info</$tag>')
 
 
 
 
 ### Initialize the application
-
-# # # BEGIN TEST # # #
-argspace = parser.parse_args(['obj.xml'])
-# # # END TEST # # #
     
 ## parse the supplied arguments and extract their surplus value, like a capitalist
-#argspace = parser.parse_args()
+argspace = parser.parse_args()
 inputFilename = argspace.File
 outputFilename = argspace.outputName
 doDate = argspace.doDate
 outputInit()
 
 # # # BEGIN TEST # # #
-out = open(outputFilename, "r")
-print out.read()
+
 # # # END TEST # # #
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # # BEGIN TEST # # #
+
+# # # END TEST # # #
+
