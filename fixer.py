@@ -7,7 +7,7 @@ import re
 from datetime import date
 from string import Template
 
-version = ('0.1.2')
+version = ('0.1.3')
 
 ### command line argument parsing 
 ##define the argument parser
@@ -19,25 +19,17 @@ parser.add_argument('--date', '-d', dest='doDate', action='store_true',
                     help = 'datestamp the fixed file with today\'s date (default off)')
 #third arg: flag for version number (exits the script if used)
 parser.add_argument('--version', '-v', action='version',
-                    version = 'fixer v%(version)s')
+                    version='fixer v' + version)
+#fourth arg: what to name the output file
 parser.add_argument('--outputname', '-o', dest='outputName',
                     help = 'what to name the output (fixed) file. Defaults to set_fixed.xml')
 
-#get the supplied arguments out of sys.argv and parse them
-rawArgs = sys.argv
-args = parser.parse_args(rawArgs)
+##parse the supplied arguments and extract their surplus value, like a capitalist
+argspace = parser.parse_args()
+inputFile = argspace.File
+outputName = argspace.outputName
+doDate = argspace.doDate
 
 #get the current date and put it in the correct string format
 today = date.today()
 date = today.strftime("%Y-%m-%d")
-
-
-# # # BEGIN TEST # # #
-dateTest = 'Today\'s date: ' + date + '\n'
-fileTest = 'Input file: ' + '\n'
-doDatestampTest = 'Datestamp?' + '\n'
-
-print dateTest
-print fileTest
-print doDatestampTest
-# # # END TEST # # #
