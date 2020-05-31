@@ -29,8 +29,8 @@ parser.add_argument('--version', '-v', action='version',
 parser.add_argument('--outputname', '-o', dest='outputName', default='set_fixed.xml',
                     help = "what to name the output (fixed) file. Defaults to set_fixed.xml")
 #fifth arg: flag for verbosity option
-parser.add_argument('--verbose', '-v', dest='Verbose', action='store_true',
-                    help = "verbose extraction and construction")
+#parser.add_argument('--verbose', '-v', dest='Verbose', action='store_true',
+                    #help = "verbose extraction and construction")
 
 
 def outputInit(): ## output initialization function
@@ -47,7 +47,8 @@ def outputInit(): ## output initialization function
         Out.write('    </sets>\n')
     ### BEGIN TEST ###
     print('Extracted block: ' + setBlock)
-    print('Set info: ' + setInfo)
+    print('Set info follows')
+    print(setInfo)
     print('New block: ' + newBlock)
     ### END TEST ###
     return setEnd
@@ -62,17 +63,17 @@ def blockExtract(tag, loc): ## extracts an entire block (set or card)
             if re.search(start, line):
                 block = line
                 break
-            else i=i+1
+            else: i = i+1
         for line in islice(In, loc, None):
             block = block + line
             if re.search(end, line):
                 break
-            else i=i+1
+            else: i=i+1
         end = i-1
     return [end,block]
 
 def infoExtract(block, tags): ## extract the data from a block (set or card)
-    info = types.SimpleNamespace(foo=bar) #define the block's info as a namespace object
+    info = SimpleNamespace(foo='bar') #define the block's info as a namespace object
     return info
 
 def blockBuild(info, blocktype): ## build a new block using an info namespace
