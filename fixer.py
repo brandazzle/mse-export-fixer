@@ -7,7 +7,7 @@ from string import Template
 from itertools import islice
 from types import SimpleNamespace
 
-version = ('0.3.1')
+version = ('0.3.2')
 
 # get the current date and put it in the correct string format
 today = date.today()
@@ -25,7 +25,7 @@ parser.add_argument('--date', '-d', dest='doDate', action='store_true',
 parser.add_argument('--version', '-v', action='version',
                     version="fixer v" + version)
 # fourth arg: what to name the output file
-parser.add_argument('--outputname', '-o', dest='outputName', default='set_fixed.xml',
+parser.add_argument('--outputname ', '-o', dest='outputName', default='set_fixed.xml',
                     help = "what to name the output (fixed) file. Defaults to set_fixed.xml")
 # fifth arg: flag for verbosity option
 #parser.add_argument('--verbose', '-v', dest='Verbose', action='store_true',
@@ -73,15 +73,22 @@ def infoExtract(block, tags): ## extract the info from a set block
     d = vars(info)
     for tag in tags:
         if tag in block: #check if the tag is present
-            # 
+            i = 1
             # search block for string of form <tag>info</tag>
-            val = 'the info string'# extract info from string
-            d[tag] = val #assign info to the appropriate tag in the namespace
+            #val = 'the info string'# extract info from string
+            #d[tag] = val #assign info to the appropriate tag in the namespace
+    ### BEGIN TEST ###
+    d['name'] = "TST"
+    d['longname'] = "Test Set"
+    d['settype'] = "Glorious"
+    ### END TEST ###
     return info
 
 def setBuild(info, blocktype): ## build a new set block using an info namespace
     if blocktype=='set':
         block = setBlock_temp.substitute(vars(info))
+    if blocktype=='card':
+        block = 'whatever'
     return block
 
 def outputFin(): ## finalize the output file
@@ -125,17 +132,17 @@ setBlock_temp = Template('        <set>\n' +
 
 
 ### BEGIN TEST ###
-argspace = parser.parse_args(['/Users/BrandonPlay/Documents/Eragon/Eragon Core.xml'])
+#argspace = parser.parse_args(['/Users/BrandonPlay/Documents/Eragon/testset.xml', '-o /Users/BrandonPlay/Documents/Eragon/set_fixed.xml'])
 ### END TEST ###
 
 ### Initialize the application
 
 ## parse the supplied arguments and extract their surplus value, like a capitalist
-#argspace = parser.parse_args()
+argspace = parser.parse_args()
 inputFilename = argspace.File
 outputFilename = argspace.outputName
 doDate = argspace.doDate
 
-#cardsLoc = outputInit() #conduct output initialization
+cardsLoc = outputInit() #conduct output initialization
 
-#main(cardsLoc) #activate main processing
+main(cardsLoc) #activate main processing
