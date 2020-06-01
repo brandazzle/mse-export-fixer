@@ -17,7 +17,7 @@ date = today.strftime("%Y-%m-%d")
 ## define the argument parser
 parser = ArgumentParser(description = "Fix a Cockatrice .xml file exported from MSE")
 # first arg: file to be fixed
-parser.add_argument('File', help = "the .xml file to fix")
+parser.add_argument('File', help = "path to the .xml file to fix")
 # second arg: file datestamping flag
 parser.add_argument('--date', '-d', dest='doDate', action='store_true', 
                     help = "datestamp the fixed file with today\'s date (default off)")
@@ -72,9 +72,11 @@ def infoExtract(block, tags): ## extract the info from a set block
     info = SimpleNamespace() #define the block's info as a namespace object
     d = vars(info)
     for tag in tags:
-        # search block for string of form <tag>info</tag>
-        # extract info from string
-        d['tag'] = 'val' #assign info to the appropriate tag in the namespace
+        if tag in block: #check if the tag is present
+            # 
+            # search block for string of form <tag>info</tag>
+            val = 'the info string'# extract info from string
+            d['tag'] = val #assign info to the appropriate tag in the namespace
     return info
 
 def setBuild(info, blocktype): ## build a new set block using an info namespace
@@ -97,7 +99,7 @@ def setDiagnose(info): ## detect missing set info, set to defaults if noncritica
     d = vars(info)
     if not hasattr(info, 'settype'): d['settype'] = 'Custom' #default set type due to assumed usage
     if not doDate: #then check if there's already an assigned date
-        if not hasattr(info, 'releasedate'): d['releasedate'] = date
+        if not hasattr(info, 'releasedate'): d['releasedate'] = date #assign current date as default
     else: d['releasedate'] = date #set date if datestamping was on
     if not hasattr(info, 'longname'):
         d['longname'] = ''
@@ -112,7 +114,8 @@ def cardDiagnose(info): ## detect missing critical card info
 
 ### String templates for writing output
 
-singleInfo = Template('<$tag>$info</$tag>') #template for a single pair of [tag, info]
+singleInfo_temp = Template('<$tag>$info</$tag>') #template for a single pair of [tag, info]
+setBlock_temp = Template('        <set>\n            
 
 
 ### BEGIN TEST ###
