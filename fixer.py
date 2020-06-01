@@ -80,7 +80,8 @@ def infoExtract(block, tags): ## extract the info from a set block
     return info
 
 def setBuild(info, blocktype): ## build a new set block using an info namespace
-    block = 'test block'
+    if blocktype=='set':
+        block = setBlock_temp.substitute(vars(info))
     return block
 
 def outputFin(): ## finalize the output file
@@ -102,10 +103,10 @@ def setDiagnose(info): ## detect missing set info, set to defaults if noncritica
         if not hasattr(info, 'releasedate'): d['releasedate'] = date #assign current date as default
     else: d['releasedate'] = date #set date if datestamping was on
     if not hasattr(info, 'longname'):
-        d['longname'] = ''
+        d['longname'] = ' '
         print("Set has no name")
     if not hasattr(info, 'name'):
-        d['name'] = ''
+        d['name'] = ' '
         print("Set has no set code")
     return info
 
@@ -114,12 +115,18 @@ def cardDiagnose(info): ## detect missing critical card info
 
 ### String templates for writing output
 
-singleInfo_temp = Template('<$tag>$info</$tag>') #template for a single pair of [tag, info]
-setBlock_temp = Template('        <set>\n            
+singleInfo = Template('<$tag>$info</$tag>') #template for a single pair of [tag, info]
+setBlock_temp = Template('        <set>\n' +
+                         '            <name>$name</name>\n' +
+                         '            <longname>$longname</longname>\n' +
+                         '            <settype>$settype</settype>\n' +
+                         '            <releasedate>$releasedate</releasedate>\n' +
+                         '        </set>\n')
 
 
 ### BEGIN TEST ###
 argspace = parser.parse_args(['/Users/BrandonPlay/Documents/Eragon/Eragon Core.xml'])
+### END TEST ###
 
 ### Initialize the application
 
