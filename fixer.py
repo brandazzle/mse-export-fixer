@@ -38,8 +38,16 @@ def outputInit(): ## output initialization function
         Out.write('<?xml version="1.0" encoding="UTF-8"?>\n') #write the .xml general header
         Out.write('<cockatrice_carddatabase version="4">\n') #write the Cockatrice database header
     [setEnd,setBlock] = blockExtract('sets', 0) #extract the set info block
-    tags = [] #the list of info tags that the set should have
+    tags = ['name','longname','settype','releasedate'] #the list of info tags that the set should have
     setInfo = infoExtract(setBlock, tags) #get the set info from the block
+    d = vars(setInfo)
+    if not hasattr(setInfo, 'settype'): d['settype'] = 'Custom' #default set type due to assumed usage
+    if not doDate: #then check if there's already an assigned date
+        if not hasattr(setInfo, 'releasedate'): d['releasedate'] = date
+    else: d['releasedate'] = date #set date if datestamping was on
+    
+    
+    
     newBlock = setBuild(setInfo, 'set') #build the new set info block
     with open(outputFilename, "at") as Out: # write set block and <cards> tag to output file
         Out.write('    <sets>\n')
@@ -71,13 +79,10 @@ def infoExtract(block, tags): ## extract the info from a set block
     # block should be the info block string, tags should be a list of info tags
     info = SimpleNamespace() #define the block's info as a namespace object
     d = vars(info)
-    d['settype'] = 'Custom' #default set type due to assumed usage
-    d['date'] = date #will be overwritten if another date is found
     for tag in tags:
         # search block for string of form <tag>info</tag>
         # extract info from string
         d[tag] = val #assign info to the appropriate tag in the namespace
-    if doDate==True: d['date'] = date
     return info
 
 def setBuild(info, blocktype): ## build a new set block using an info namespace
