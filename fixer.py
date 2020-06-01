@@ -81,22 +81,20 @@ def outputFin(): ## finalize the output file
         Out.write('</cockatrice_carddatabase>')
     print("Successfully wrote " + outputFilename)
 
-def mainloop(cardsStart):
-    ### BEGIN TEST ###
-    print('Mainloop started')
-    print(cardsStart)
-    ### END TEST ###
+def main(cardsStart):
+
+    outputFin()
+
 
 ### String templates for writing output
 
-## Tagged info templates
 singleInfo = Template('<$tag>$info</$tag>') #template for a single pair of [tag, info]
 
 
 
 
 ### Initialize the application
-    
+
 ## parse the supplied arguments and extract their surplus value, like a capitalist
 argspace = parser.parse_args()
 inputFilename = argspace.File
@@ -105,35 +103,4 @@ doDate = argspace.doDate
 
 cardsLoc = outputInit() #conduct output initialization
 
-mainloop(cardsLoc)
-
-# # # BEGIN TEST # # #
-outputFin()
-# # # END TEST # # #
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # # BEGIN TEST # # #
-
-# # # END TEST # # #
-
+main(cardsLoc)
