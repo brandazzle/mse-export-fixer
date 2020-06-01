@@ -1,7 +1,6 @@
 import sys
 import argparse
 from argparse import ArgumentParser
-import math
 import re
 from datetime import date
 from string import Template
@@ -40,15 +39,8 @@ def outputInit(): ## output initialization function
     [setEnd,setBlock] = blockExtract('sets', 0) #extract the set info block
     tags = ['name','longname','settype','releasedate'] #the list of info tags that the set should have
     setInfo = infoExtract(setBlock, tags) #get the set info from the block
-    d = vars(setInfo)
-    if not hasattr(setInfo, 'settype'): d['settype'] = 'Custom' #default set type due to assumed usage
-    if not doDate: #then check if there's already an assigned date
-        if not hasattr(setInfo, 'releasedate'): d['releasedate'] = date
-    else: d['releasedate'] = date #set date if datestamping was on
-    
-    
-    
-    newBlock = setBuild(setInfo, 'set') #build the new set info block
+    fixInfo = setDiagnose(setInfo) #check for missing info
+    newBlock = setBuild(fixInfo, 'set') #build the new set info block
     with open(outputFilename, "at") as Out: # write set block and <cards> tag to output file
         Out.write('    <sets>\n')
         Out.write(newBlock)
@@ -82,7 +74,7 @@ def infoExtract(block, tags): ## extract the info from a set block
     for tag in tags:
         # search block for string of form <tag>info</tag>
         # extract info from string
-        d[tag] = val #assign info to the appropriate tag in the namespace
+        d['tag'] = 'val' #assign info to the appropriate tag in the namespace
     return info
 
 def setBuild(info, blocktype): ## build a new set block using an info namespace
@@ -95,10 +87,28 @@ def outputFin(): ## finalize the output file
         Out.write('</cockatrice_carddatabase>')
     print("Successfully wrote " + outputFilename)
 
-def main(cardsStart):
+
+def main(cardsStart): ## The main program loop, for fixing cards
 
     outputFin()
 
+
+def setDiagnose(info): ## detect missing set info, set to defaults if noncritical, else send message
+    d = vars(info)
+    if not hasattr(info, 'settype'): d['settype'] = 'Custom' #default set type due to assumed usage
+    if not doDate: #then check if there's already an assigned date
+        if not hasattr(info, 'releasedate'): d['releasedate'] = date
+    else: d['releasedate'] = date #set date if datestamping was on
+    if not hasattr(info, 'longname'):
+        d['longname'] = ''
+        print("Set has no name")
+    if not hasattr(info, 'name'):
+        d['name'] = ''
+        print("Set has no set code")
+    return info
+
+def cardDiagnose(info): ## detect missing critical card info
+    whatever=1
 
 ### String templates for writing output
 
