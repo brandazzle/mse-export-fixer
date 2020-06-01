@@ -76,7 +76,7 @@ def infoExtract(block, tags): ## extract the info from a set block
             # 
             # search block for string of form <tag>info</tag>
             val = 'the info string'# extract info from string
-            d['tag'] = val #assign info to the appropriate tag in the namespace
+            d[tag] = val #assign info to the appropriate tag in the namespace
     return info
 
 def setBuild(info, blocktype): ## build a new set block using an info namespace
