@@ -40,7 +40,7 @@ def outputInit(): ## output initialization function
     tags = ['name','longname','settype','releasedate'] #the list of info tags that the set should have
     setInfo = infoExtract(setBlock, tags) #get the set info from the block
     fixInfo = setDiagnose(setInfo) #check for missing info
-    newBlock = setBuild(fixInfo, 'set') #build the new set info block
+    newBlock = blockBuild(fixInfo, 'set') #build the new set info block
     with open(outputFilename, "at") as Out: # write set block and <cards> tag to output file
         Out.write('    <sets>\n')
         Out.write(newBlock)
@@ -64,8 +64,8 @@ def blockExtract(tag, loc): ## extracts an entire block (set or card)
             i = i+1
             if re.search(end, line):
                 break
-        end = i
-    return [end,block]
+        endLoc = i
+    return [endLoc,block]
 
 def infoExtract(block, tags): ## extract the info from an info block
     # block should be the info block string, tags should be a list of info tags
@@ -74,14 +74,15 @@ def infoExtract(block, tags): ## extract the info from an info block
     for tag in tags:
         if tag in block: #check if the tag is present (activates for any of <tag>, </tag>, or both)
             try:
-                found = re.search(regex_temp.substitute({'tag' : tag})) #search for the info
+                regex = regex_temp.substitute({'tag' : tag}) #form the regex string
+                found = re.search(regex, block) #search for the info in the block
                 d[tag] = found.group(1) #assign the extracted info to the tag in the namespace
             except AttributeError:
                 print("Missing <" + tag + "> or </" + tag + "> tag")
                 # will only activate if one half of the tag wrapper is present but not the other
     return info
 
-def setBuild(info, blocktype): ## build a new set block using an info namespace
+def blockBuild(info, blocktype): ## build a new info block using an info namespace
     if blocktype=='set':
         block = setBlock_temp.substitute(vars(info))
     if blocktype=='card':
@@ -92,10 +93,10 @@ def outputFin(): ## finalize the output file
     with open(outputFilename, "at") as Out:
         Out.write('\n    </cards>\n')
         Out.write('</cockatrice_carddatabase>')
-    if setName = ' ': #if the set had no name, so diagnostics set the name to a whitespace string
+    if setName == ' ': #if the set had no name, so diagnostics set the name to a whitespace string
         endMessage = "Successfully wrote " + outputFilename
     else:
-        endMessage = "Successfully wrote " + outputFilename + " for set " + setName
+        endMessage = "Successfully wrote " + outputFilename + " for set " + setCode
     print(endMessage)
 
 
@@ -124,18 +125,23 @@ def cardDiagnose(info): ## detect missing critical card info
 ### String templates
 
 singleInfo = Template('<$tag>$info</$tag>') #output template for a single pair of [tag, info]
+
 setBlock_temp = Template('        <set>\n' +
                          '            <name>$name</name>\n' +
                          '            <longname>$longname</longname>\n' +
                          '            <settype>$settype</settype>\n' +
                          '            <releasedate>$releasedate</releasedate>\n' +
                          '        </set>\n') #output template for a set info block
-regex_temp = Template('<$tag>(.+?)</$tag>') #template for the regex string for finding info for a given tag
-colors = ['R', 'W', 'G', 'U', 'B']
 
-### BEGIN TEST ###
-argspace = parser.parse_args(['/Users/BrandonPlay/Documents/Eragon/testset.xml'])
-### END TEST ###
+# template for the regex string for finding info for a given tag
+regex_temp = Template('<$tag>(.+?)</$tag>')
+
+
+### Global lists
+
+colors = ['R','W','G','U','B'] #list of mana colors for determining card color or color identity
+
+
 
 ### Initialize the application
 
@@ -145,7 +151,8 @@ inputFilename = argspace.File
 outputFilename = argspace.outputName
 doDate = argspace.doDate
 
-#[cardsLoc, setName] = outputInit() #conduct output initialization,
+[cardsLoc, setCode] = outputInit() #conduct output initialization,
 # retrieving card info location and set name into global variables
 
-#main(cardsLoc) #activate main processing starting at start of card info
+main(cardsLoc) #activate main processing starting at start of card info
+
