@@ -7,7 +7,7 @@ from string import Template
 from itertools import islice
 from types import SimpleNamespace
 
-version = ('0.4.1')
+version = ('0.4.2')
 
 # get the current date and put it in the correct string format
 today = date.today()
@@ -60,6 +60,7 @@ def blockExtract(tag, loc):
     start = '<' + tag + '>'
     end = '</' + tag + '>' #build matchable strings for the start and end tags
     ## open the input file and search for the first string enclosed by <tag></tag>
+    block = ''
     with open(inputFilename, "rt") as In:
         i = loc
         for line in islice(In, loc, None):
@@ -84,7 +85,7 @@ def infoExtract(block, tags): # block should be the info block string, tags shou
         if (tag + '>') in block: #check if the tag is present (activates for <tag> or </tag>)
             try:
                 regex = regex_temp.substitute({'tag' : tag}) #form the regex string
-                found = re.search(regex, block) #search for the info in the block
+                found = re.search(regex, block, re.S) #search for the info in the block
                 d[tag] = found.group(1) #assign the extracted info to the tag in the namespace
             except AttributeError:
                 print("Missing <" + tag + "> or </" + tag + "> tag")
@@ -109,7 +110,7 @@ Displays a success message, using the set code if it exists."""
     with open(outputFilename, "at") as Out:
         Out.write('\n    </cards>\n')
         Out.write('</cockatrice_carddatabase>')
-    if setName == ' ': #if the set had no name, meaning diagnostics set the name to a whitespace string
+    if setCode == ' ': #if the set had no name, meaning diagnostics set the name to a whitespace string
         endMessage = "Successfully wrote " + outputFilename
     else:
         endMessage = "Successfully wrote " + outputFilename + " for set " + setCode
@@ -124,8 +125,8 @@ def main(cardsLoc):
         cardcount = file.count('<card>')
     cardnum = 1
     while cardnum <= cardcount:
-        [nextCard,block] = blockExtract('card', nextCard)
-        cardInfo = infoExtract(block, cardtags)
+        [nextCard,cardblock] = blockExtract('card', nextCard)
+        cardInfo = infoExtract(cardblock, cardtags)
         fixInfo = cardDiagnose(cardInfo, cardnum)
         if DFC_check(fixInfo):
             newBlock = DFC_process(fixInfo)
