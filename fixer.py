@@ -142,6 +142,9 @@ regex_temp = Template('<$tag>(.+?)</$tag>')
 colors = ['R','W','G','U','B'] #list of mana colors for determining card color or color identity
 
 
+### BEGIN TEST ###
+#argspace = parser.parse_args(['/Users/BrandonPlay/Documents/Eragon/testset.xml'])
+### END TEST ###
 
 ### Initialize the application
 
