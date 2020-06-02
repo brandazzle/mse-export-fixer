@@ -116,7 +116,7 @@ Displays a success message, using the set code if it exists."""
     print(endMessage)
 
 
-def main():
+def main(cardsLoc):
     """Fix all card info blocks and write them to the output file."""
     nextCard = cardsLoc
     with open(inputFilename, "rt") as In:
@@ -164,15 +164,40 @@ def DFC_check(info):
     return isDFC
 
 
+def secondaryInfo(info):
+    """Process additional card info from extracted info."""
+    return info
+
+
+def cmc(manacost):
+    """Determine a card's converted mana cost."""
+    pass
+
+
+def color(manacost, cardtext):
+    """Determine a card's color."""
+    pass
+
+
+def coloridentity(manacost, cardtext):
+    """Determine a card's color identity."""
+    pass
+
+
+def token(cardtext):
+    """Determine tokens to associate."""
+    pass
+
+
+def dual_check():
+    """Check if a card is a dual card."""
+    pass
+
+
 def DFC_process(info):
     """Process double-faced card info."""
     block = 'placeholder'
     return block
-
-
-def secondaryInfo(info):
-    """Process additional card info from extracted info."""
-    return info
 
 
 ### String templates
@@ -219,7 +244,7 @@ doDate = argspace.doDate
 [cardsLoc, setCode] = outputInit() #conduct output initialization,
 # retrieving card info start location and set code into global variables
 
-main() #activate main processing starting at start of card info
+main(cardsLoc) #activate main processing starting at start of card info
 
 outputFin() #finalize the output file
 
