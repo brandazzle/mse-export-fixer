@@ -7,7 +7,7 @@ from string import Template
 from itertools import islice
 from types import SimpleNamespace
 
-version = ('0.3.3')
+version = ('0.4.1')
 
 # get the current date and put it in the correct string format
 today = date.today()
@@ -54,6 +54,7 @@ as well as the set code."""
         Out.write('    <cards>\n')
     return [setEnd, fixInfo.name]
 
+
 def blockExtract(tag, loc):
     """Extract an entire set or card info block from the input file."""
     start = '<' + tag + '>'
@@ -74,12 +75,13 @@ def blockExtract(tag, loc):
         endLoc = i
     return [endLoc,block]
 
+
 def infoExtract(block, tags): # block should be the info block string, tags should be a list of info tags
     """Extract the info from a card or set info block."""
     info = SimpleNamespace() #define the block's info as a namespace object
     d = vars(info)
     for tag in tags:
-        if tag in block: #check if the tag is present (activates for any of <tag>, </tag>, or both)
+        if (tag + '>') in block: #check if the tag is present (activates for <tag> or </tag>)
             try:
                 regex = regex_temp.substitute({'tag' : tag}) #form the regex string
                 found = re.search(regex, block) #search for the info in the block
@@ -89,13 +91,15 @@ def infoExtract(block, tags): # block should be the info block string, tags shou
                 # will only activate if one half of the tag wrapper is present but not the other
     return info
 
+
 def blockBuild(info, blocktype):
     """Build a new set or card info block using an info namespace."""
     if blocktype=='set':
         block = setBlock_temp.substitute(vars(info))
     if blocktype=='card':
-        block = 'whatever'
+        block = '        <card>\n            whatever\n        </card>\n'
     return block
+
 
 def outputFin():
     """Finalize the output file.
@@ -105,18 +109,25 @@ Displays a success message, using the set code if it exists."""
     with open(outputFilename, "at") as Out:
         Out.write('\n    </cards>\n')
         Out.write('</cockatrice_carddatabase>')
-    if setName == ' ': #if the set had no name, so diagnostics set the name to a whitespace string
+    if setName == ' ': #if the set had no name, meaning diagnostics set the name to a whitespace string
         endMessage = "Successfully wrote " + outputFilename
     else:
         endMessage = "Successfully wrote " + outputFilename + " for set " + setCode
     print(endMessage)
 
 
-def main(cardsStart):
+def main():
     """Fix all card info blocks and write them to the output file."""
-
-    outputFin()
-
+    nextCard = cardsLoc
+    with open(inputFilename, "rt") as In:
+        file = In.read()
+        cardcount = file.count('<card>')
+    for cardnum in cardcount:
+        [nextCard,block] = blockExtract('card', nextCard)
+        cardInfo = infoExtract(block,cardtags)
+        fixInfo = cardDiagnose(cardInfo,cardnum)
+        
+    
 
 def setDiagnose(info):
     """Detect missing set info.
@@ -136,9 +147,22 @@ Sends messages for missing set name and set code."""
         print("Set has no set code")
     return info
 
-def cardDiagnose(info):
+
+def cardDiagnose(info, cardNumber):
     """Detect missing critical card info."""
-    pass
+    return info
+
+
+def DFC_check(info):
+    """Check if a card is double-faced."""
+    isDFC = False
+    return isDFC
+
+
+def DFC_process(info):
+    """Process double-faced card info."""
+    block = 'placeholder'
+    return block
 
 ### String templates
 
@@ -159,6 +183,15 @@ regex_temp = Template('<$tag>(.+?)</$tag>')
 
 colors = ['R','W','G','U','B'] #list of mana colors for determining card color or color identity
 
+# list of possible card info tags
+cardtags = ['name','text','layout','side','type','maintype','manacost','cmc','colors','coloridentity',
+            'pt','loyalty','related','reverse-related','token','tablerow','cipt','upsidedown']
+# list of generic card info tags, i.e. those that go in the <prop> tag block
+generictags = ['layout','side','type','maintype','manacost','cmc','colors',
+               'coloridentity','pt','loyalty']
+# tags that go between </prop> and </card>
+specialtags = ['related','reverse-related','token','tablerow','cipt','upsidedown']
+
 
 ### BEGIN TEST ###
 #argspace = parser.parse_args(['/Users/BrandonPlay/Documents/Eragon/testset.xml'])
@@ -173,7 +206,9 @@ outputFilename = argspace.outputName
 doDate = argspace.doDate
 
 [cardsLoc, setCode] = outputInit() #conduct output initialization,
-# retrieving card info location and set code into global variables
+# retrieving card info start location and set code into global variables
 
-main(cardsLoc) #activate main processing starting at start of card info
+main() #activate main processing starting at start of card info
+
+outputFin() #finalize the output file
 
