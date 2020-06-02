@@ -12,13 +12,12 @@ By way of background: the current version MSE Cockatrice export template "Cockat
 2. It doesn't export DFCs (double-faced cards) the way Cockatrice expects them, which is as two separate cards connected using the `<related>` tag, one with the tag `<side>front</side>` and the other with the tag `<side>back</side>`.
 3. It doesn't use the `<related>` tag to link cards that create tokens to the predefined tokens they create.
 4. It doesn't add rarity information.
-5. It adds converted mana costs inconsistently, if at all.
+5. It adds converted mana costs (the `<cmc>` tag) inconsistently, if at all.
 6. Because (I think) of the use of the v3 formatting, it uses the `<color>` tag instead of `<colors>`, and consequently does not properly tag the card colors of hybrid and multicolored cards.
 7. It doesn't add color identity (the `<coloridentity>` tag).
-8. It doesn't add converted mana costs (the `<cmc>` tag).
-9. It doesn't add card numbering within a set (the `num` option within the `<set ... >` tag of a card).
+8. It doesn't add card numbering within a set (the `num` option within the `<set ... >` tag of a card).
 
-Of these issues, the app will fix 1, 2, 5, 6, 7, and 8. Rarities and numbering are totally absent from the files that MSE generates, and parsing token names from rules text is hard. I'll work the latter out when I can actually be arsed to do it. Probably.
+Of these issues, the app will fix 1, 2, 5, 6, and 7. Rarities and numbering are totally absent from the files that MSE generates, and parsing token names from rules text is hard. I'll work the latter out when I can actually be arsed to do it. Probably.
 
 Note: You'll need to split the card images for the two sides of DFCs yourself, since MSE normally exports them as one file. Just be sure to name the images according to the names of the respective sides and put them in with the rest of your card images, and you should be good.
 
