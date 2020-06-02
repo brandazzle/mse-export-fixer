@@ -122,7 +122,8 @@ def main(cardsLoc):
     with open(inputFilename, "rt") as In:
         file = In.read()
         cardcount = file.count('<card>')
-    for cardnum in cardcount:
+    cardnum = 1
+    while cardnum <= cardcount:
         [nextCard,block] = blockExtract('card', nextCard)
         cardInfo = infoExtract(block, cardtags)
         fixInfo = cardDiagnose(cardInfo, cardnum)
@@ -133,6 +134,7 @@ def main(cardsLoc):
             newBlock = blockBuild(info, 'card')
         with open(outputFilename, "at") as Out:
             Out.write(newBlock)
+        cardnum = cardnum + 1
 
 def setDiagnose(info):
     """Detect missing set info.
