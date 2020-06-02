@@ -124,10 +124,15 @@ def main():
         cardcount = file.count('<card>')
     for cardnum in cardcount:
         [nextCard,block] = blockExtract('card', nextCard)
-        cardInfo = infoExtract(block,cardtags)
-        fixInfo = cardDiagnose(cardInfo,cardnum)
-        
-    
+        cardInfo = infoExtract(block, cardtags)
+        fixInfo = cardDiagnose(cardInfo, cardnum)
+        if DFC_check(fixInfo):
+            newBlock = DFC_process(fixInfo)
+        else:
+            info = secondaryInfo(fixInfo)
+            newBlock = blockBuild(info, 'card')
+        with open(outputFilename, "at") as Out:
+            Out.write(newBlock)
 
 def setDiagnose(info):
     """Detect missing set info.
@@ -163,6 +168,12 @@ def DFC_process(info):
     """Process double-faced card info."""
     block = 'placeholder'
     return block
+
+
+def secondaryInfo(info):
+    """Process additional card info from extracted info."""
+    return info
+
 
 ### String templates
 
