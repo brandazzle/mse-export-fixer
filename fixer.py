@@ -7,7 +7,7 @@ from string import Template
 from itertools import islice
 from types import SimpleNamespace
 
-version = ('0.3.2')
+version = ('0.3.3')
 
 # get the current date and put it in the correct string format
 today = date.today()
@@ -46,7 +46,7 @@ def outputInit(): ## output initialization function
         Out.write(newBlock)
         Out.write('    </sets>\n')
         Out.write('    <cards>\n')
-    return setEnd
+    return [setEnd, fixInfo.name]
 
 def blockExtract(tag, loc): ## extracts an entire block (set or card)
     start = '<' + tag + '>'
@@ -120,15 +120,16 @@ def setDiagnose(info): ## detect missing set info, set to defaults if noncritica
 def cardDiagnose(info): ## detect missing critical card info
     whatever=1
 
-### String templates for writing output
+### String templates
 
-singleInfo = Template('<$tag>$info</$tag>') #template for a single pair of [tag, info]
+singleInfo = Template('<$tag>$info</$tag>') #output template for a single pair of [tag, info]
 setBlock_temp = Template('        <set>\n' +
                          '            <name>$name</name>\n' +
                          '            <longname>$longname</longname>\n' +
                          '            <settype>$settype</settype>\n' +
                          '            <releasedate>$releasedate</releasedate>\n' +
-                         '        </set>\n')
+                         '        </set>\n') #output template for a set info block
+regex_temp = Template('<$tag>(.+?)</$tag>') #template for the regex string for finding info for a given tag
 
 
 ### BEGIN TEST ###
@@ -143,6 +144,7 @@ inputFilename = argspace.File
 outputFilename = argspace.outputName
 doDate = argspace.doDate
 
-cardsLoc = outputInit() #conduct output initialization
+[cardsLoc, setName] = outputInit() #conduct output initialization,
+# retrieving card info location and set name into global variables
 
-main(cardsLoc) #activate main processing
+main(cardsLoc) #activate main processing starting at start of card info
