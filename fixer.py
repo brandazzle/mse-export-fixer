@@ -72,12 +72,13 @@ def infoExtract(block, tags): ## extract the info from an info block
     info = SimpleNamespace() #define the block's info as a namespace object
     d = vars(info)
     for tag in tags:
-        if tag in block: #check if the tag is present
+        if tag in block: #check if the tag is present (activates for any of <tag>, </tag>, or both)
             try:
                 found = re.search(regex_temp.substitute({'tag' : tag})) #search for the info
                 d[tag] = found.group(1) #assign the extracted info to the tag in the namespace
             except AttributeError:
                 print("Missing <" + tag + "> or </" + tag + "> tag")
+                # will only activate if one half of the tag wrapper is present but not the other
     return info
 
 def setBuild(info, blocktype): ## build a new set block using an info namespace
@@ -91,7 +92,11 @@ def outputFin(): ## finalize the output file
     with open(outputFilename, "at") as Out:
         Out.write('\n    </cards>\n')
         Out.write('</cockatrice_carddatabase>')
-    print("Successfully wrote " + outputFilename)
+    if setName = ' ': #if the set had no name, so diagnostics set the name to a whitespace string
+        endMessage = "Successfully wrote " + outputFilename
+    else:
+        endMessage = "Successfully wrote " + outputFilename + " for set " + setName
+    print(endMessage)
 
 
 def main(cardsStart): ## The main program loop, for fixing cards
@@ -129,7 +134,7 @@ regex_temp = Template('<$tag>(.+?)</$tag>') #template for the regex string for f
 colors = ['R', 'W', 'G', 'U', 'B']
 
 ### BEGIN TEST ###
-#argspace = parser.parse_args(['/Users/BrandonPlay/Documents/Eragon/testset.xml', '-o /Users/BrandonPlay/Documents/Eragon/set_fixed.xml'])
+argspace = parser.parse_args(['/Users/BrandonPlay/Documents/Eragon/testset.xml'])
 ### END TEST ###
 
 ### Initialize the application
@@ -140,7 +145,7 @@ inputFilename = argspace.File
 outputFilename = argspace.outputName
 doDate = argspace.doDate
 
-[cardsLoc, setName] = outputInit() #conduct output initialization,
+#[cardsLoc, setName] = outputInit() #conduct output initialization,
 # retrieving card info location and set name into global variables
 
-main(cardsLoc) #activate main processing starting at start of card info
+#main(cardsLoc) #activate main processing starting at start of card info
