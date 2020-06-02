@@ -95,10 +95,26 @@ def infoExtract(block, tags): # block should be the info block string, tags shou
 
 def blockBuild(info, blocktype):
     """Build a new set or card info block using an info namespace."""
+    d = vars(info)
     if blocktype=='set':
-        block = setBlock_temp.substitute(vars(info))
+        block = setBlock_temp.substitute(d)
     if blocktype=='card':
-        block = '        <card>\n            whatever\n        </card>\n'
+        #block = '        <card>\n            whatever\n        </card>\n'
+        block = '        <card>\n'
+        block += '            ' + singleInfo.substitute({'tag' : 'name', 'info' : info.name})
+        block += '            ' + singleInfo.substitute({'tag' : 'text', 'info' : info.text})
+        block += '            <prop>\n'
+        for tag in generictags:
+            if hasattr(info, tag):
+                infoline = singleInfo.substitute({'tag' : tag, 'info' : d[tag]})
+                block += '                ' + infoline
+        block += '            </prop>\n'
+        block += '            <set>' + setCode + '</set>\n'
+        for tag in specialtags:
+            if hasattr(info, tag):
+                infoline = singleInfo.substitute({'tag' : tag, 'info' : d[tag]})
+                block += '            ' + infoline
+        block += '        </card>\n'
     return block
 
 
@@ -205,7 +221,7 @@ def DFC_process(info):
 
 ### String templates
 
-singleInfo = Template('<$tag>$info</$tag>') #output template for a single pair of [tag, info]
+singleInfo = Template('<$tag>$info</$tag>\n') #output template for a single pair of [tag, info]
 
 setBlock_temp = Template('        <set>\n' +
                          '            <name>$name</name>\n' +
