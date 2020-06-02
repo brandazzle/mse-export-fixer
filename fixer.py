@@ -20,7 +20,7 @@ parser = ArgumentParser(description = "Fix a Cockatrice .xml file exported from 
 parser.add_argument('File', help = "path to the .xml file to fix")
 # second arg: file datestamping flag
 parser.add_argument('--date', '-d', dest='doDate', action='store_true', 
-                    help = "datestamp the fixed file with today\'s date (default off)")
+                    help = "set the set release date to today\'s date (default off)")
 # third arg: flag for version number (exits the script if used)
 parser.add_argument('--version', '-v', action='version',
                     version="fixer v" + version)
@@ -28,7 +28,7 @@ parser.add_argument('--version', '-v', action='version',
 parser.add_argument('--outputname ', '-o', dest='outputName', default='set_fixed.xml',
                     help = "what to name the output (fixed) file. Defaults to set_fixed.xml")
 # fifth arg: flag for verbosity option
-#parser.add_argument('--verbose', '-v', dest='Verbose', action='store_true',
+#parser.add_argument('--verbose', dest='Verbose', action='store_true',
                     #help = "verbose extraction and construction")
 
 
@@ -67,21 +67,17 @@ def blockExtract(tag, loc): ## extracts an entire block (set or card)
         end = i
     return [end,block]
 
-def infoExtract(block, tags): ## extract the info from a set block
+def infoExtract(block, tags): ## extract the info from an info block
     # block should be the info block string, tags should be a list of info tags
     info = SimpleNamespace() #define the block's info as a namespace object
     d = vars(info)
     for tag in tags:
         if tag in block: #check if the tag is present
-            i = 1
-            # search block for string of form <tag>info</tag>
-            #val = 'the info string'# extract info from string
-            #d[tag] = val #assign info to the appropriate tag in the namespace
-    ### BEGIN TEST ###
-    d['name'] = "TST"
-    d['longname'] = "Test Set"
-    d['settype'] = "Glorious"
-    ### END TEST ###
+            try:
+                found = re.search(regex_temp.substitute({'tag' : tag})) #search for the info
+                d[tag] = found.group(1) #assign the extracted info to the tag in the namespace
+            except AttributeError:
+                print("Missing <" + tag + "> or </" + tag + "> tag")
     return info
 
 def setBuild(info, blocktype): ## build a new set block using an info namespace
@@ -130,7 +126,7 @@ setBlock_temp = Template('        <set>\n' +
                          '            <releasedate>$releasedate</releasedate>\n' +
                          '        </set>\n') #output template for a set info block
 regex_temp = Template('<$tag>(.+?)</$tag>') #template for the regex string for finding info for a given tag
-
+colors = ['R', 'W', 'G', 'U', 'B']
 
 ### BEGIN TEST ###
 #argspace = parser.parse_args(['/Users/BrandonPlay/Documents/Eragon/testset.xml', '-o /Users/BrandonPlay/Documents/Eragon/set_fixed.xml'])
