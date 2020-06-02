@@ -32,7 +32,13 @@ parser.add_argument('--outputname ', '-o', dest='outputName', default='set_fixed
                     #help = "verbose extraction and construction")
 
 
-def outputInit(): ## output initialization function
+def outputInit():
+    """Initialize the output file.
+
+Writes the standard .xml header, the Cockatrice card database tag,
+and the set info block derived from the input file.
+Returns the location of the </sets> tag in the input file,
+as well as the set code."""
     with open(outputFilename, "wt") as Out: #open the output file
         Out.write('<?xml version="1.0" encoding="UTF-8"?>\n') #write the .xml general header
         Out.write('<cockatrice_carddatabase version="4">\n') #write the Cockatrice database header
@@ -48,7 +54,8 @@ def outputInit(): ## output initialization function
         Out.write('    <cards>\n')
     return [setEnd, fixInfo.name]
 
-def blockExtract(tag, loc): ## extracts an entire block (set or card)
+def blockExtract(tag, loc):
+    """Extract an entire set or card info block from the input file."""
     start = '<' + tag + '>'
     end = '</' + tag + '>' #build matchable strings for the start and end tags
     ## open the input file and search for the first string enclosed by <tag></tag>
@@ -67,8 +74,8 @@ def blockExtract(tag, loc): ## extracts an entire block (set or card)
         endLoc = i
     return [endLoc,block]
 
-def infoExtract(block, tags): ## extract the info from an info block
-    # block should be the info block string, tags should be a list of info tags
+def infoExtract(block, tags): # block should be the info block string, tags should be a list of info tags
+    """Extract the info from a card or set info block."""
     info = SimpleNamespace() #define the block's info as a namespace object
     d = vars(info)
     for tag in tags:
@@ -82,14 +89,19 @@ def infoExtract(block, tags): ## extract the info from an info block
                 # will only activate if one half of the tag wrapper is present but not the other
     return info
 
-def blockBuild(info, blocktype): ## build a new info block using an info namespace
+def blockBuild(info, blocktype):
+    """Build a new set or card info block using an info namespace."""
     if blocktype=='set':
         block = setBlock_temp.substitute(vars(info))
     if blocktype=='card':
         block = 'whatever'
     return block
 
-def outputFin(): ## finalize the output file
+def outputFin():
+    """Finalize the output file.
+
+Writes the Cockatrice card database end tag to the output file.
+Displays a success message, using the set code if it exists."""
     with open(outputFilename, "at") as Out:
         Out.write('\n    </cards>\n')
         Out.write('</cockatrice_carddatabase>')
@@ -100,12 +112,17 @@ def outputFin(): ## finalize the output file
     print(endMessage)
 
 
-def main(cardsStart): ## The main program loop, for fixing cards
+def main(cardsStart):
+    """Fix all card info blocks and write them to the output file."""
 
     outputFin()
 
 
-def setDiagnose(info): ## detect missing set info, set to defaults if noncritical, else send message
+def setDiagnose(info):
+    """Detect missing set info.
+
+Sets noncritical info (date and set type) to defaults.
+Sends messages for missing set name and set code."""
     d = vars(info)
     if not hasattr(info, 'settype'): d['settype'] = 'Custom' #default set type due to assumed usage
     if not doDate: #then check if there's already an assigned date
@@ -119,8 +136,9 @@ def setDiagnose(info): ## detect missing set info, set to defaults if noncritica
         print("Set has no set code")
     return info
 
-def cardDiagnose(info): ## detect missing critical card info
-    whatever=1
+def cardDiagnose(info):
+    """Detect missing critical card info."""
+    pass
 
 ### String templates
 
@@ -155,7 +173,7 @@ outputFilename = argspace.outputName
 doDate = argspace.doDate
 
 [cardsLoc, setCode] = outputInit() #conduct output initialization,
-# retrieving card info location and set name into global variables
+# retrieving card info location and set code into global variables
 
 main(cardsLoc) #activate main processing starting at start of card info
 
