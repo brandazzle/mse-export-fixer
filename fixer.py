@@ -30,6 +30,9 @@ parser.add_argument('--outputname ', '-o', dest='outputName', default='set_fixed
 # fifth arg: flag for verbosity option
 #parser.add_argument('--verbose', dest='Verbose', action='store_true',
                     #help = "verbose extraction and construction")
+# sixth arg: flag for prompting user for colors of DFC backs
+parser.add_argument('--colorprompt', '-cp', dest='colorPrompt', action='store_true',
+                    help = "manually enter color for DFC backs (default off)")
 
 
 def outputInit():
@@ -224,9 +227,26 @@ def dual_check(info):
 
 
 def DFC_process(info):
-    """Process double-faced card info."""
-    block = 'placeholder'
+    """Create the combined info block for a DFC."""
+    [frontinfo, backinfo] = backProcess(info)
+    frontBlock = blockBuild(frontinfo)
+    backBlock = blockBuild(backinfo)
+    block = frontBlock + backBlock
     return block
+
+
+def backProcess(info):
+    """Derive the front and back info from a combined info namespace."""
+    frontInfo = SimpleNamespace(side='front')
+    backInfo = SimpleNamespace(side='back')
+    df = vars(frontInfo)
+    db = vars(backInfo)
+    backname = input("Enter the name for the back of " + info.name)
+    if doBackColor == True:
+        backcolor = input("Enter the color of the back of " + info.name)
+    frontInfo = info
+    backInfo = info
+    return [frontInfo, backInfo]
 
 
 ### String templates
@@ -260,6 +280,7 @@ specialtags = ['related','reverse-related','token','tablerow','cipt','upsidedown
 
 ### BEGIN TEST ###
 argspace = parser.parse_args(['/Users/BrandonPlay/Documents/Eragon/testset.xml'])
+doBackColor = True
 ### END TEST ###
 
 ### Initialize the application
@@ -269,6 +290,7 @@ argspace = parser.parse_args(['/Users/BrandonPlay/Documents/Eragon/testset.xml']
 inputFilename = argspace.File
 outputFilename = argspace.outputName
 doDate = argspace.doDate
+doBackColor = argspace.colorPrompt
 
 [cardsLoc, setCode] = outputInit() #conduct output initialization,
 # retrieving card info start location and set code into global variables
