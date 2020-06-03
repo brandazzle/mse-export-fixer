@@ -32,7 +32,7 @@ parser.add_argument('--outputname ', '-o', dest='outputName', default='set_fixed
                     #help = "verbose extraction and construction")
 # sixth arg: flag for prompting user for colors of DFC backs
 parser.add_argument('--colorprompt', '-cp', dest='colorPrompt', action='store_true',
-                    help = "manually enter color for DFC backs (default off)")
+                    help = "manually enter color for DFC backs (default copies front color)")
 
 
 def outputInit():
@@ -120,6 +120,15 @@ def blockBuild(info, blocktype):
             if hasattr(info, tag):
                 infoline = singleInfo.substitute({'tag' : tag, 'info' : d[tag]})
                 block += '            ' + infoline
+        if hasattr(info, 'related'):
+            if info.attach:
+                infoline = '<related attach="attach">' + info.related + '</related>'
+            else:
+                infoline = singleInfo.substitute({'tag' : 'related', 'info' : info.related})
+            block += '            ' + infoline
+        if hasattr(info, 'reverse-related'):
+            infoline = singleInfo.substitute({'tag' : 'reverse-related', 'info' : info.reverse-related})
+            block += '            ' + infoline
         block += '        </card>\n'
     return block
 
@@ -271,6 +280,10 @@ def backProcess(info):
         if hasattr(info, tag):
             df[tag] = d[tag]
             db[tag] = d[tag]
+    frontInfo.related = backInfo.name
+    backInfo.related = frontInfo.name
+    frontInfo.attach = True
+    backInfo.attach = True
     return [frontInfo, backInfo]
 
 
@@ -300,7 +313,7 @@ cardtags = ['name','text','layout','side','type','maintype','manacost','cmc','co
 generictags = ['layout','side','type','maintype','manacost','cmc','colors',
                'coloridentity','pt','loyalty']
 # tags that go between </prop> and </card>
-specialtags = ['related','reverse-related','token','tablerow','cipt','upsidedown']
+specialtags = ['token','tablerow','cipt','upsidedown']
 # tags whose values are common to both sides of DFCs
 carrytags = ['coloridentity','tablerow','maintype','layout','cmc']
 
