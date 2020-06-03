@@ -122,7 +122,7 @@ def blockBuild(info, blocktype):
                 block += '            ' + infoline
         if hasattr(info, 'related'):
             if info.attach:
-                infoline = '<related attach="attach">' + info.related + '</related>'
+                infoline = '<related attach="attach">' + info.related + '</related>\n'
             else:
                 infoline = singleInfo.substitute({'tag' : 'related', 'info' : info.related})
             block += '            ' + infoline
@@ -238,8 +238,8 @@ def dual_check(info):
 def DFC_process(info):
     """Create the combined info block for a DFC."""
     [frontinfo, backinfo] = backProcess(info) #call the info processor
-    frontBlock = blockBuild(frontinfo)
-    backBlock = blockBuild(backinfo)
+    frontBlock = blockBuild(frontinfo, 'card')
+    backBlock = blockBuild(backinfo, 'card')
     block = frontBlock + backBlock
     return block
 
@@ -249,11 +249,11 @@ def backProcess(info):
     backInfo = SimpleNamespace(side='back') #create back info namespace
     frontInfo = SimpleNamespace(side='front') #create front info namespace
     frontInfo.name = info.name
-    backInfo.name = input("Enter the name for the back of " + info.name + " :")
+    backInfo.name = input("Enter the name for the back of " + info.name + ": ")
     if hasattr(info, 'color'):
         frontInfo.color = info.color
         if doBackColor == True:
-            backInfo.color = input("Enter the color of the back of " + info.name + " :")
+            backInfo.color = input("Enter the color of the back of " + info.name + ": ")
         else:
             backInfo.color = info.color
     found = re.search('(.+?) // (.+)', info.type)
