@@ -7,7 +7,7 @@ from string import Template
 from itertools import islice
 from types import SimpleNamespace
 
-version = ('0.4.2')
+version = ('0.4.3')
 
 # get the current date and put it in the correct string format
 today = date.today()
