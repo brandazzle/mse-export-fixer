@@ -239,31 +239,35 @@ def backProcess(info):
     """Derive the front and back info from a combined info namespace."""
     backInfo = SimpleNamespace(side='back') #create back info namespace
     frontInfo = SimpleNamespace(side='front') #create front info namespace
-    
-    frontText = frontInfo.text
+    frontInfo.name = info.name
     backInfo.name = input("Enter the name for the back of " + info.name + " :")
     if doBackColor == True:
         backInfo.color = input("Enter the color of the back of " + info.name + " :")
     else:
         backInfo.color = info.color
-    
-        
-        
-    found = re.search('(.+?)\n---\n(.+)', frontText, re.S) #split the rules text
+    found = re.search('(.+?) // (.+)', info.type)
     if found:
-        frontInfo.text = found.group(1) #first part goes to the front
-        backInfo.text = found.group(2) #second part goes to the back
+        frontInfo.type = found.group(1) #first part goes to the front
+        backInfo.type = found.group(2) #second part goes to the back
     else:
-        print("Error processing rules text for " + info.name)
+        print("Error processing type for " + frontInfo.name + ' // ' + backInfo.name)
+    found = re.search('(.+?)\n---\n(.+)', info.text, re.S) #split the rules text
+    if found:
+        frontInfo.text = found.group(1) # same as above
+        backInfo.text = found.group(2) 
+    else:
+        print("Error processing rules text for " + frontInfo.name + ' // ' + backInfo.name)
     if hasattr(info, 'pt'): #split the power/toughness
         found = re.search('(\d?[XYZ*\d]/\d?[XYZ*\d]) // (\d?[XYZ*\d]/\d?[XYZ*\d])', info.pt)
         if found:
             frontInfo.pt = found.group(1) # same as above
             backInfo.pt = found.group(2)
         else:
-            print("Error processing power/toughness for " + info.name)
-    frontInfo = info
-    backInfo = info
+            print("Error processing power/toughness for " + frontInfo.name + ' // ' + backInfo.name)
+    df = vars(frontInfo)
+    db = vars(backInfo)
+    for tag in carrytags:
+        df[tag] = 
     return [frontInfo, backInfo]
 
 
