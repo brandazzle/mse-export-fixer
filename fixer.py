@@ -7,7 +7,7 @@ from string import Template
 from itertools import islice
 from types import SimpleNamespace
 
-version = ('0.5.1')
+version = ('0.5.2')
 
 # get the current date and put it in the correct string format
 today = date.today()
@@ -250,10 +250,12 @@ def backProcess(info):
     frontInfo = SimpleNamespace(side='front') #create front info namespace
     frontInfo.name = info.name
     backInfo.name = input("Enter the name for the back of " + info.name + " :")
-    if doBackColor == True:
-        backInfo.color = input("Enter the color of the back of " + info.name + " :")
-    else:
-        backInfo.color = info.color
+    if hasattr(info, 'color'):
+        frontInfo.color = info.color
+        if doBackColor == True:
+            backInfo.color = input("Enter the color of the back of " + info.name + " :")
+        else:
+            backInfo.color = info.color
     found = re.search('(.+?) // (.+)', info.type)
     if found:
         frontInfo.type = found.group(1) #first part goes to the front
