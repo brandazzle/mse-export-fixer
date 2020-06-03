@@ -268,8 +268,9 @@ def backProcess(info):
     df = vars(frontInfo)
     db = vars(backInfo)
     for tag in carrytags:
-        df[tag] = d[tag]
-        db[tag] = d[tag]
+        if hasattr(info, tag):
+            df[tag] = d[tag]
+            db[tag] = d[tag]
     return [frontInfo, backInfo]
 
 
