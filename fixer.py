@@ -264,10 +264,12 @@ def backProcess(info):
             backInfo.pt = found.group(2)
         else:
             print("Error processing power/toughness for " + frontInfo.name + ' // ' + backInfo.name)
+    d = vars(info)
     df = vars(frontInfo)
     db = vars(backInfo)
     for tag in carrytags:
-        df[tag] = 
+        df[tag] = d[tag]
+        db[tag] = d[tag]
     return [frontInfo, backInfo]
 
 
