@@ -241,16 +241,21 @@ def backProcess(info):
     frontInfo = SimpleNamespace(side='front') #create front info namespace
     
     frontText = frontInfo.text
-    backname = input("Enter the name for the back of " + info.name)
+    backInfo.name = input("Enter the name for the back of " + info.name + " :")
     if doBackColor == True:
-        backcolor = input("Enter the color of the back of " + info.name)
+        backInfo.color = input("Enter the color of the back of " + info.name + " :")
     
         
         
-        found = re.search('(.+?)\n---\n(.+?)', frontText, re.S)
+    found = re.search('(.+?)\n---\n(.+?)', frontText, re.S)
         
-    if 'Creature' in info.type:
-        
+    if hasattr(info, 'pt'):
+        found = re.search('(\d?[XYZ*\d]/\d?[XYZ*\d]) // (\d?[XYZ*\d]/\d?[XYZ*\d])', info.pt)
+        if found:
+            frontInfo.pt = found.group(1)
+            backInfo.pt = found.group(2)
+        else:
+            print("Error processing power/toughness for " + info.name)
     frontInfo = info
     backInfo = info
     return [frontInfo, backInfo]
