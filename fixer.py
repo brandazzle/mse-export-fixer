@@ -144,20 +144,20 @@ def main(cardsLoc):
     nextCard = cardsLoc
     with open(inputFilename, "rt") as In:
         file = In.read()
-        cardcount = file.count('<card>')
+        cardcount = file.count('<card>') #count the cards with the <card> tag
     cardnum = 1
     while cardnum <= cardcount:
-        [nextCard,cardblock] = blockExtract('card', nextCard)
-        cardInfo = infoExtract(cardblock, cardtags)
+        [nextCard,cardblock] = blockExtract('card', nextCard) #extract the next card block
+        cardInfo = infoExtract(cardblock, cardtags) #extract the card info
         fixInfo = cardDiagnose(cardInfo, cardnum)
-        if DFC_check(fixInfo):
-            newBlock = DFC_process(fixInfo)
+        info = secondaryInfo(fixInfo) #color identity and cmc don't depend on whether it's a DFC
+        if DFC_check(fixInfo): #if it's a DFC:
+            newBlock = DFC_process(fixInfo) #call the DFC processor
         else:
-            info = secondaryInfo(fixInfo)
-            newBlock = blockBuild(info, 'card')
+            newBlock = blockBuild(info, 'card') #build the normal block
         with open(outputFilename, "at") as Out:
-            Out.write(newBlock)
-        cardnum = cardnum + 1
+            Out.write(newBlock) #append the new info block
+        cardnum = cardnum + 1 #increment the card number
 
 def setDiagnose(info):
     """Detect missing set info.
@@ -228,7 +228,7 @@ def dual_check(info):
 
 def DFC_process(info):
     """Create the combined info block for a DFC."""
-    [frontinfo, backinfo] = backProcess(info)
+    [frontinfo, backinfo] = backProcess(info) #call the info processor
     frontBlock = blockBuild(frontinfo)
     backBlock = blockBuild(backinfo)
     block = frontBlock + backBlock
@@ -237,13 +237,20 @@ def DFC_process(info):
 
 def backProcess(info):
     """Derive the front and back info from a combined info namespace."""
-    frontInfo = SimpleNamespace(side='front')
-    backInfo = SimpleNamespace(side='back')
-    df = vars(frontInfo)
-    db = vars(backInfo)
+    backInfo = SimpleNamespace(side='back') #create back info namespace
+    frontInfo = SimpleNamespace(side='front') #create front info namespace
+    
+    frontText = frontInfo.text
     backname = input("Enter the name for the back of " + info.name)
     if doBackColor == True:
         backcolor = input("Enter the color of the back of " + info.name)
+    
+        
+        
+        found = re.search('(.+?)\n---\n(.+?)', frontText, re.S)
+        
+    if 'Creature' in info.type:
+        
     frontInfo = info
     backInfo = info
     return [frontInfo, backInfo]
@@ -276,11 +283,12 @@ generictags = ['layout','side','type','maintype','manacost','cmc','colors',
                'coloridentity','pt','loyalty']
 # tags that go between </prop> and </card>
 specialtags = ['related','reverse-related','token','tablerow','cipt','upsidedown']
+# tags whose values are common to both sides of DFCs
+carrytags = ['coloridentity','tablerow','maintype','layout','cmc']
 
 
 ### BEGIN TEST ###
 argspace = parser.parse_args(['/Users/BrandonPlay/Documents/Eragon/testset.xml'])
-doBackColor = True
 ### END TEST ###
 
 ### Initialize the application
