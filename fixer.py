@@ -7,7 +7,7 @@ from string import Template
 from itertools import islice
 from types import SimpleNamespace
 
-version = ('0.4.3')
+version = ('0.5.1')
 
 # get the current date and put it in the correct string format
 today = date.today()
@@ -182,7 +182,10 @@ def cardDiagnose(info, cardNumber):
 
 def DFC_check(info):
     """Check if a card is double-faced."""
-    isDFC = False
+    if '//' in info.type:
+        isDFC = True
+    else:
+        isDFC = False
     return isDFC
 
 
@@ -211,9 +214,13 @@ def token(cardtext):
     pass
 
 
-def dual_check():
+def dual_check(info):
     """Check if a card is a dual card."""
-    pass
+    if '//' in info.name:
+        isDual = True
+    else:
+        isDual = False
+    return isDual
 
 
 def DFC_process(info):
