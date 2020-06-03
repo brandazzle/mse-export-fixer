@@ -247,8 +247,10 @@ def backProcess(info):
     
         
         
-    found = re.search('(.+?)\n---\n(.+?)', frontText, re.S)
-        
+    found = re.search('(.+?)\n---\n(.+)', frontText, re.S)
+    if found:
+        frontInfo.text = found.group(1)
+        backInfo.text = found.group(2)
     if hasattr(info, 'pt'):
         found = re.search('(\d?[XYZ*\d]/\d?[XYZ*\d]) // (\d?[XYZ*\d]/\d?[XYZ*\d])', info.pt)
         if found:
