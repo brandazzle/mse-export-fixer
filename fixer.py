@@ -63,18 +63,21 @@ def blockExtract(tag, loc):
     block = ''
     with open(inputFilename, "rt") as In:
         i = loc
-        for line in islice(In, loc, None):
+        sliced = islice(In, loc, None)
+        for line in sliced:
             if re.search(start, line):
                 block = line
                 break
             else: i=i+1
-        for line in islice(In, loc, None):
+    with open(inputFilename, "rt") as In:
+        sliced2 = islice(In, i, None)
+        for line in sliced2:
             block = block + line
             i = i+1
             if re.search(end, line):
                 break
-        endLoc = i
-    return [endLoc,block]
+    endLoc = i
+    return [endLoc, block]
 
 
 def infoExtract(block, tags): # block should be the info block string, tags should be a list of info tags
@@ -101,8 +104,8 @@ def blockBuild(info, blocktype):
     if blocktype=='card':
         #block = '        <card>\n            whatever\n        </card>\n'
         block = '        <card>\n'
-        block += '            ' + singleInfo.substitute({'tag' : 'name', 'info' : info.name})
-        block += '            ' + singleInfo.substitute({'tag' : 'text', 'info' : info.text})
+        block += '            ' + singleInfo.substitute({'tag' : 'name', 'info' : d['name']})
+        block += '            ' + singleInfo.substitute({'tag' : 'text', 'info' : d['text']})
         block += '            <prop>\n'
         for tag in generictags:
             if hasattr(info, tag):
@@ -249,13 +252,13 @@ specialtags = ['related','reverse-related','token','tablerow','cipt','upsidedown
 
 
 ### BEGIN TEST ###
-#argspace = parser.parse_args(['/Users/BrandonPlay/Documents/Eragon/testset.xml'])
+argspace = parser.parse_args(['/Users/BrandonPlay/Documents/Eragon/testset.xml'])
 ### END TEST ###
 
 ### Initialize the application
 
 ## parse the supplied arguments and extract their surplus value, like a capitalist
-argspace = parser.parse_args()
+#argspace = parser.parse_args()
 inputFilename = argspace.File
 outputFilename = argspace.outputName
 doDate = argspace.doDate
