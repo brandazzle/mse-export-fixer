@@ -282,12 +282,16 @@ def backProcess(info):
         backInfo.type = found.group(2) #second part goes to the back
     else:
         print("Error processing type for " + frontInfo.name + ' // ' + backInfo.name)
+        frontInfo.type = info.type
+        backInfo.type = ' '
     found = re.search('(.+?)\n---\n(.+)', info.text, re.S) #split the rules text
     if found:
         frontInfo.text = found.group(1) # same as above
         backInfo.text = found.group(2) 
     else:
         print("Error processing rules text for " + frontInfo.name + ' // ' + backInfo.name)
+        frontInfo.text = info.text
+        backInfo.text = ' '
     if hasattr(info, 'pt'): #split the power/toughness
         found = re.search('(\d?[XYZ*\d]/\d?[XYZ*\d]) // (\d?[XYZ*\d]/\d?[XYZ*\d])', info.pt)
         if found:
@@ -295,6 +299,8 @@ def backProcess(info):
             backInfo.pt = found.group(2)
         else:
             print("Error processing power/toughness for " + frontInfo.name + ' // ' + backInfo.name)
+            frontInfo.pt = info.pt
+            backInfo.pt = ' '
     d = vars(info)
     df = vars(frontInfo)
     db = vars(backInfo)
