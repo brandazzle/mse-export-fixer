@@ -16,6 +16,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#!/usr/bin/env python
+
 import sys
 import argparse
 from argparse import ArgumentParser
@@ -166,7 +168,7 @@ Displays a success message, using the set code if it exists."""
     print(endMessage)
 
 
-def main(cardsLoc):
+def cardfix(cardsLoc):
     """Fix all card info blocks and write them to the output file."""
     nextCard = cardsLoc
     with open(inputFilename, "rt") as In:
@@ -350,6 +352,6 @@ doBackColor = argspace.colorPrompt
 [cardsLoc, setCode] = outputInit() #conduct output initialization,
 # retrieving card info start location and set code into global variables
 
-main(cardsLoc) #activate main processing starting at start of card info
+cardfix(cardsLoc) #activate main processing starting at start of card info
 
 outputFin() #finalize the output file

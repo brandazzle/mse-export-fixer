@@ -17,5 +17,5 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",],
-    scripts = ['fixer']
+    scripts = ['fixer.py']
     )
