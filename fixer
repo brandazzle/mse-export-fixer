@@ -276,7 +276,7 @@ def backProcess(info):
             backInfo.color = input("Enter the color of the back of " + info.name + ": ")
         else:
             backInfo.color = info.color
-    found = re.search('(.+?) // (.+)', info.type)
+    found = re.search('(.+?) // (.+)', info.type, re.S)
     if found:
         frontInfo.type = found.group(1) #first part goes to the front
         backInfo.type = found.group(2) #second part goes to the back
