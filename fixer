@@ -51,7 +51,7 @@ parser.add_argument('--outputname ', '-o', dest='outputName', default='set_fixed
 #parser.add_argument('--verbose', dest='Verbose', action='store_true',
                     #help = "verbose extraction and construction")
 # sixth arg: flag for prompting user for colors of DFC backs
-parser.add_argument('--colorprompt', '-cp', dest='colorPrompt', action='store_true',
+parser.add_argument('--colorprompt', '-c', dest='colorPrompt', action='store_true',
                     help = "manually enter color for DFC backs (default copies front color)")
 
 
@@ -271,13 +271,13 @@ def backProcess(info):
     frontInfo = SimpleNamespace(side='front') #create front info namespace
     frontInfo.name = info.name
     backInfo.name = input("Enter the name for the back of " + info.name + ": ")
-    if hasattr(info, 'color'):
-        frontInfo.color = info.color
-        if doBackColor == True:
-            backInfo.color = input("Enter the color of the back of " + info.name + ": ")
+    if hasattr(info, 'colors'):
+        frontInfo.colors = info.colors
+        if doBackColor:
+            backInfo.colors = input("Enter the colors of the back of " + info.name + ": ")
         else:
-            backInfo.color = info.color
-    found = re.match('(.+?) // (.+)', info.type)
+            backInfo.colors = info.colors
+    found = re.match('(.+?) // (.+)', info.type) #split the type
     if found:
         frontInfo.type = found.group(1) #first part goes to the front
         backInfo.type = found.group(2) #second part goes to the back
@@ -285,7 +285,7 @@ def backProcess(info):
         print("Error processing type for " + frontInfo.name + ' // ' + backInfo.name)
         frontInfo.type = info.type
         backInfo.type = ' '
-    found = re.match('(.+?)\n---\n(.+)', info.text, re.S) #split the rules text
+    found = re.fullmatch('(.+)--- \n(.+)', info.text, re.DOTALL) #split the rules text
     if found:
         frontInfo.text = found.group(1) # same as above
         backInfo.text = found.group(2) 
