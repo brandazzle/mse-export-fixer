@@ -114,7 +114,8 @@ def infoExtract(block, tags): # block should be the info block string, tags shou
                 found = re.search(regex, block, re.S) #search for the info in the block
                 d[tag] = found.group(1) #assign the extracted info to the tag in the namespace
             except AttributeError:
-                print("Missing <" + tag + "> or </" + tag + "> tag")
+                if not 'Land' in info.type or 'Token' in info.type or 'Emblem' in info.type:
+                    print("Missing <" + tag + "> or </" + tag + "> tag")
                 # will only activate if one half of the tag wrapper is present but not the other
     return info
 
@@ -276,7 +277,7 @@ def backProcess(info):
             backInfo.color = input("Enter the color of the back of " + info.name + ": ")
         else:
             backInfo.color = info.color
-    found = re.search('(.+?) // (.+)', info.type, re.S)
+    found = re.match('(.+?) // (.+)', info.type)
     if found:
         frontInfo.type = found.group(1) #first part goes to the front
         backInfo.type = found.group(2) #second part goes to the back
@@ -284,7 +285,7 @@ def backProcess(info):
         print("Error processing type for " + frontInfo.name + ' // ' + backInfo.name)
         frontInfo.type = info.type
         backInfo.type = ' '
-    found = re.search('(.+?)\n---\n(.+)', info.text, re.S) #split the rules text
+    found = re.match('(.+?)\n---\n(.+)', info.text, re.S) #split the rules text
     if found:
         frontInfo.text = found.group(1) # same as above
         backInfo.text = found.group(2) 
@@ -293,7 +294,7 @@ def backProcess(info):
         frontInfo.text = info.text
         backInfo.text = ' '
     if hasattr(info, 'pt'): #split the power/toughness
-        found = re.search('(\d?[XYZ*\d]/\d?[XYZ*\d]) // (\d?[XYZ*\d]/\d?[XYZ*\d])', info.pt)
+        found = re.match('(\d?[XYZ*\d]/\d?[XYZ*\d]) // (\d?[XYZ*\d]/\d?[XYZ*\d])', info.pt)
         if found:
             frontInfo.pt = found.group(1) # same as above
             backInfo.pt = found.group(2)
