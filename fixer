@@ -232,22 +232,39 @@ def secondaryInfo(info):
 
 def cmc(manacost):
     """Determine a card's converted mana cost."""
-    pass
+    triples = re.findall('[WUBRG]/[WUBRG]/[WUBRG]', manacost)
+    cost = re.sub('[WUBRG]/[WUBRG]/[WUBRG]', '', manacost)
+    doubles = re.findall('[WUBRG]/[WUBRG]', cost)
+    cost = re.sub('[WUBRG]/[WUBRG]', '', cost)
+    twos = re.findall('2/[WUBRG]', cost)
+    cost = re.sub('2/[WUBRG]', '', cost)
+    ones = re.findall('[WUBRGC]', cost)
+    cost = re.sub('[WUBRG]', '', cost)
+    cost = re.sub('[XYZ]', '', cost)
+    cost = int(cost)
+    cost += len(ones)
+    cost += len(twos)
+    cost += len(twos)
+    cost += len(doubles)
+    cost += len(triples)
+    return cost
 
 
 def color(manacost, cardtext):
     """Determine a card's color."""
-    cardcolor = ''
-    if not 'Devoid' in cardtext: #Devoid supersedes color from mana cost
+    cardcolors = ''
+    if not "Devoid" in cardtext: #Devoid keyword supersedes color from mana cost
         for color in colors:
             if color in manacost:
-                cardcolor += color #Add each color that is present to the card color
-    return cardcolor
+                cardcolors += color #Add each color that is present to the card color
+    return cardcolors
 
 
 def coloridentity(manacost, cardtext):
     """Determine a card's color identity."""
-    pass
+    identity = color(manacost, ' ') #color identity ignores Devoid keyword
+    colorRegex = '' #need to write a regex that will pull mana symbols out of rules text
+    return identity
 
 
 def token(cardtext):
