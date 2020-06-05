@@ -224,6 +224,9 @@ def DFC_check(info):
 
 def secondaryInfo(info):
     """Process additional card info from extracted info."""
+    info.colors = color(info.manacost, info.text)
+    info.cmc = cmc(info.manacost)
+    info.coloridentity = coloridentity(info.colors, info.text)
     return info
 
 
@@ -234,7 +237,12 @@ def cmc(manacost):
 
 def color(manacost, cardtext):
     """Determine a card's color."""
-    pass
+    cardcolor = ''
+    if not 'Devoid' in cardtext: #Devoid supersedes color from mana cost
+        for color in colors:
+            if color in manacost:
+                cardcolor += color #Add each color that is present to the card color
+    return cardcolor
 
 
 def coloridentity(manacost, cardtext):
@@ -243,7 +251,7 @@ def coloridentity(manacost, cardtext):
 
 
 def token(cardtext):
-    """Determine tokens to associate."""
+    """Determine tokens to associate with a card."""
     pass
 
 
@@ -285,7 +293,7 @@ def backProcess(info):
         print("Error processing type for " + frontInfo.name + ' // ' + backInfo.name)
         frontInfo.type = info.type
         backInfo.type = ' '
-    found = re.fullmatch('(.+)--- \n(.+)', info.text, re.DOTALL) #split the rules text
+    found = re.fullmatch('(.+?)\n--- \n(.+)', info.text, re.DOTALL) #split the rules text
     if found:
         frontInfo.text = found.group(1) # same as above
         backInfo.text = found.group(2) 
@@ -333,7 +341,7 @@ regex_temp = Template('<$tag>(.+?)</$tag>')
 
 ### Global lists
 
-colors = ['R','W','G','U','B'] #list of mana colors for determining card color or color identity
+colors = ['W','U','B','R','G'] #list of mana colors for determining card color or color identity
 
 # list of possible card info tags
 cardtags = ['name','text','layout','side','type','maintype','manacost','cmc','colors','coloridentity',
