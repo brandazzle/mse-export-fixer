@@ -128,8 +128,14 @@ def blockBuild(info, blocktype):
     if blocktype=='card':
         #block = '        <card>\n            whatever\n        </card>\n'
         block = '        <card>\n'
-        block += '            ' + singleInfo.substitute({'tag' : 'name', 'info' : d['name']})
-        block += '            ' + singleInfo.substitute({'tag' : 'text', 'info' : d['text']})
+        try:
+            block += '            ' + singleInfo.substitute({'tag' : 'name', 'info' : d['name']})
+        except KeyError:
+            print("Missing card name")
+        try:
+            block += '            ' + singleInfo.substitute({'tag' : 'text', 'info' : d['text']})
+        except KeyError:
+            print("Missing rules text")
         block += '            <prop>\n'
         for tag in generictags:
             if hasattr(info, tag):
