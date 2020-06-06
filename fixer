@@ -241,7 +241,10 @@ def cmc(manacost):
     ones = re.findall('[WUBRGC]', cost)
     cost = re.sub('[WUBRG]', '', cost)
     cost = re.sub('[XYZ]', '', cost)
-    cost = int(cost)
+    if cost != '':
+        cost = int(cost)
+    else:
+        cost = 0
     cost += len(ones)
     cost += len(twos)
     cost += len(twos)
