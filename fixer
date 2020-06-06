@@ -215,8 +215,11 @@ def cardDiagnose(info, cardNumber):
 
 def DFC_check(info):
     """Check if a card is double-faced."""
-    if '//' in info.type:
-        isDFC = True
+    if hasattr(info, 'type'):
+        if '//' in info.type:
+            isDFC = True
+        else:
+            isDFC = False
     else:
         isDFC = False
     return isDFC
