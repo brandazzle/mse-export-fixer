@@ -48,7 +48,7 @@ parser.add_argument('--version', '-v', action='version',
 parser.add_argument('--outputname', '-o', dest='outputName', default='set_fixed.xml',
                     help = "what to name the output (fixed) file. Defaults to set_fixed.xml")
 # flag for verbosity option
-parser.add_argument('--verbose', dest='verbose', action='store_true',
+parser.add_argument('--verbose', dest='VERBOSE', action='store_true',
                     help = "verbose extraction and construction")
 # flag for prompting user for colors of DFC backs
 parser.add_argument('--colorprompt', '-c', dest='colorPrompt', action='store_true',
@@ -56,15 +56,6 @@ parser.add_argument('--colorprompt', '-c', dest='colorPrompt', action='store_tru
 # card image URL template
 parser.add_argument('--imageURL', '-u', dest='imageURL', default='%(name)s',
                     help = "template for the card image download URLs")
-
-
-# Define verboseprint: only prints its args if verbose is true;
-# otherwise, it's a contentless lambda
-if verbose:
-    def verboseprint(*args, **kwargs):
-        print(*args, **kwargs)
-else:
-    verboseprint = lambda *a, **k: None
 
 
 def outputInit():
@@ -424,7 +415,17 @@ outputFilename = argspace.outputName
 doDate = argspace.doDate
 doBackColor = argspace.colorPrompt
 imageURL = argspace.imageURL
-verbose = argspace.verbose
+verbose = argspace.VERBOSE
+
+
+# Define verboseprint: only prints its args if verbose is true;
+# otherwise, it's a contentless lambda
+if verbose:
+    def verboseprint(*args, **kwargs):
+        print(*args, **kwargs)
+else:
+    verboseprint = lambda *a, **k: None
+
 
 [cardsLoc, setCode] = outputInit() #conduct output initialization,
 # retrieving card info start location and set code into global variables
