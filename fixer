@@ -128,8 +128,7 @@ def blockBuild(info, blocktype):
     d = vars(info)
     if blocktype=='set':
         block = setBlock_temp.substitute(d)
-    if blocktype=='card':
-        #block = '        <card>\n            whatever\n        </card>\n'
+    elif blocktype=='card':
         block = '        <card>\n'
         try:
             block += '            ' + singleInfo.substitute({'tag' : 'name', 'info' : d['name']})
@@ -160,6 +159,8 @@ def blockBuild(info, blocktype):
             infoline = singleInfo.substitute({'tag' : 'reverse-related', 'info' : info.reverse-related})
             block += '            ' + infoline
         block += '        </card>\n'
+    else:
+        raise ValueError("Invalid block type - must be set or card")
     return block
 
 
