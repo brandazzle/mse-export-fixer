@@ -155,7 +155,7 @@ def blockBuild(info, blocktype):
                 block += '                ' + infoline
         block += '            </prop>\n'
         newName = simpName(info.name)
-        URL = imageURL.substitute('name': newName)
+        URL = imageURL.substitute({'name': newName})
         block += '            <set picurl="' + URL + '">' + setCode + '</set>\n'
         for tag in specialtags:
             if hasattr(info, tag):
