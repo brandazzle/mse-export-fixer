@@ -414,7 +414,7 @@ inputFilename = argspace.File
 outputFilename = argspace.outputName
 doDate = argspace.doDate
 doBackColor = argspace.colorPrompt
-imageURL = argspace.imageURL
+imageURL = Template(argspace.imageURL)
 verbose = argspace.VERBOSE
 
 
