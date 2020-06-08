@@ -141,34 +141,34 @@ def blockBuild(info, blocktype):
     elif blocktype=='card':
         block = '        <card>\n'
         try:
-            block += '            ' + singleInfo.substitute({'tag' : 'name', 'info' : d['name']})
+            block += '            ' + singleInfo.substitute({'tag': 'name', 'info': d['name']})
         except KeyError:
             print("Missing card name")
         try:
-            block += '            ' + singleInfo.substitute({'tag' : 'text', 'info' : d['text']})
+            block += '            ' + singleInfo.substitute({'tag': 'text', 'info': d['text']})
         except KeyError:
             print("Missing rules text")
         block += '            <prop>\n'
         for tag in generictags:
             if hasattr(info, tag):
-                infoline = singleInfo.substitute({'tag' : tag, 'info' : d[tag]})
+                infoline = singleInfo.substitute({'tag': tag, 'info': d[tag]})
                 block += '                ' + infoline
         block += '            </prop>\n'
         newName = simpName(info.name)
         URL = imageURL.substitute('name': newName)
-        block += '            <set picurl="' + imgURL + '">' + setCode + '</set>\n'
+        block += '            <set picurl="' + URL + '">' + setCode + '</set>\n'
         for tag in specialtags:
             if hasattr(info, tag):
-                infoline = singleInfo.substitute({'tag' : tag, 'info' : d[tag]})
+                infoline = singleInfo.substitute({'tag': tag, 'info': d[tag]})
                 block += '            ' + infoline
         if hasattr(info, 'related'):
             if info.attach:
                 infoline = '<related attach="attach">' + info.related + '</related>\n'
             else:
-                infoline = singleInfo.substitute({'tag' : 'related', 'info' : info.related})
+                infoline = singleInfo.substitute({'tag': 'related', 'info': info.related})
             block += '            ' + infoline
         if hasattr(info, 'reverse-related'):
-            infoline = singleInfo.substitute({'tag' : 'reverse-related', 'info' : info.reverse-related})
+            infoline = singleInfo.substitute({'tag': 'reverse-related', 'info': info.reverse-related})
             block += '            ' + infoline
         block += '        </card>\n'
     else:
@@ -329,6 +329,7 @@ def DFC_process(info):
     frontBlock = blockBuild(frontinfo, 'card')
     backBlock = blockBuild(backinfo, 'card')
     block = frontBlock + backBlock
+    verboseprint("Processed DFC ", frontinfo.name, " // ", backinfo.name)
     return block
 
 
