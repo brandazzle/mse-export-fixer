@@ -27,7 +27,7 @@ from string import Template
 from itertools import islice
 from types import SimpleNamespace
 
-version = ('1.1.0')
+version = ('1.2.0')
 
 # get the current date and put it in the correct string format
 today = date.today()
@@ -36,23 +36,26 @@ date = today.strftime("%Y-%m-%d")
 ### command line argument parsing 
 ## define the argument parser
 parser = ArgumentParser(description = "Fix a Cockatrice .xml file exported from MSE")
-# first arg: file to be fixed
+# file to be fixed
 parser.add_argument('File', help = "path to the .xml file to fix")
-# second arg: file datestamping flag
+# file datestamping flag
 parser.add_argument('--date', '-d', dest='doDate', action='store_true', 
                     help = "set the set release date to today\'s date (default off)")
-# third arg: flag for version number (exits the script if used)
+# flag for version number (exits the script if used)
 parser.add_argument('--version', '-v', action='version',
                     version="fixer v" + version)
-# fourth arg: what to name the output file
-parser.add_argument('--outputname ', '-o', dest='outputName', default='set_fixed.xml',
+# what to name the output file
+parser.add_argument('--outputname', '-o', dest='outputName', default='set_fixed.xml',
                     help = "what to name the output (fixed) file. Defaults to set_fixed.xml")
-# fifth arg: flag for verbosity option
+# flag for verbosity option
 #parser.add_argument('--verbose', dest='Verbose', action='store_true',
                     #help = "verbose extraction and construction")
-# sixth arg: flag for prompting user for colors of DFC backs
+# flag for prompting user for colors of DFC backs
 parser.add_argument('--colorprompt', '-c', dest='colorPrompt', action='store_true',
                     help = "manually enter color for DFC backs (default copies front color)")
+# card image URL template
+parser.add_argument('--imageURL', '-u', dest='imageURL', default='%(name)s',
+                    help = "template for the card image download URLs"
 
 
 def outputInit():
