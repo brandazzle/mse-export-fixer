@@ -48,8 +48,8 @@ parser.add_argument('--version', '-v', action='version',
 parser.add_argument('--outputname', '-o', dest='outputName', default='set_fixed.xml',
                     help = "what to name the output (fixed) file. Defaults to set_fixed.xml")
 # flag for verbosity option
-#parser.add_argument('--verbose', dest='Verbose', action='store_true',
-                    #help = "verbose extraction and construction")
+parser.add_argument('--verbose', dest='verbose', action='store_true',
+                    help = "verbose extraction and construction")
 # flag for prompting user for colors of DFC backs
 parser.add_argument('--colorprompt', '-c', dest='colorPrompt', action='store_true',
                     help = "manually enter color for DFC backs (default copies front color)")
@@ -58,13 +58,23 @@ parser.add_argument('--imageURL', '-u', dest='imageURL', default='%(name)s',
                     help = "template for the card image download URLs")
 
 
+# Define verboseprint: only prints its args if verbose is true;
+# otherwise, it's a contentless lambda
+if verbose:
+    def verboseprint(*args, **kwargs):
+        print(*args, **kwargs)
+else:
+    verboseprint = lambda *a, **k: None
+
+
 def outputInit():
     """Initialize the output file.
 
 Writes the standard .xml header, the Cockatrice card database tag,
 and the set info block derived from the input file.
 Returns the location of the </sets> tag in the input file,
-as well as the set code."""
+as well as the set code.
+"""
     with open(outputFilename, "wt") as Out: #open the output file
         Out.write('<?xml version="1.0" encoding="UTF-8"?>\n') #write the .xml general header
         Out.write('<cockatrice_carddatabase version="4">\n') #write the Cockatrice database header
@@ -144,7 +154,9 @@ def blockBuild(info, blocktype):
                 infoline = singleInfo.substitute({'tag' : tag, 'info' : d[tag]})
                 block += '                ' + infoline
         block += '            </prop>\n'
-        block += '            <set>' + setCode + '</set>\n'
+        newName = simpname(info.name)
+        URL = imageURL.substitute('name': newName)
+        block += '            <set picurl="' + imgURL + '">' + setCode + '</set>\n'
         for tag in specialtags:
             if hasattr(info, tag):
                 infoline = singleInfo.substitute({'tag' : tag, 'info' : d[tag]})
@@ -168,7 +180,8 @@ def outputFin():
     """Finalize the output file.
 
 Writes the Cockatrice card database end tag to the output file.
-Displays a success message, using the set code if it exists."""
+Displays a success message, using the set code if it exists.
+"""
     with open(outputFilename, "at") as Out:
         Out.write('\n    </cards>\n')
         Out.write('</cockatrice_carddatabase>')
@@ -203,7 +216,8 @@ def setDiagnose(info):
     """Detect missing set info.
 
 Sets noncritical info (date and set type) to defaults.
-Sends messages for missing set name and set code."""
+Sends messages for missing set name and set code.
+"""
     d = vars(info)
     if not hasattr(info, 'settype'): d['settype'] = 'Custom' #default set type due to assumed usage
     if not doDate: #then check if there's already an assigned date
@@ -398,6 +412,7 @@ outputFilename = argspace.outputName
 doDate = argspace.doDate
 doBackColor = argspace.colorPrompt
 imageURL = argspace.imageURL
+verbose = argspace.verbose
 
 [cardsLoc, setCode] = outputInit() #conduct output initialization,
 # retrieving card info start location and set code into global variables
