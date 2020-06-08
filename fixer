@@ -154,7 +154,7 @@ def blockBuild(info, blocktype):
                 infoline = singleInfo.substitute({'tag' : tag, 'info' : d[tag]})
                 block += '                ' + infoline
         block += '            </prop>\n'
-        newName = simpname(info.name)
+        newName = simpName(info.name)
         URL = imageURL.substitute('name': newName)
         block += '            <set picurl="' + imgURL + '">' + setCode + '</set>\n'
         for tag in specialtags:
@@ -175,6 +175,17 @@ def blockBuild(info, blocktype):
         raise ValueError("Invalid block type - must be set or card")
     return block
 
+
+def simpName(name):
+    """Remove special characters and replace spaces with '%20'.
+
+Note that characters from other languages that are based on English letters
+will be removed, along with all punctuation.
+"""
+    remname = re.sub('[^A-Za-z0-9 ]+', '', name)
+    newname = re.sub(' ', '%20', remname)
+    return newname
+    
 
 def outputFin():
     """Finalize the output file.
