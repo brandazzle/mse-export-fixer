@@ -55,7 +55,7 @@ parser.add_argument('--colorprompt', '-c', dest='colorPrompt', action='store_tru
                     help = "manually enter color for DFC backs (default copies front color)")
 # card image URL template
 parser.add_argument('--imageURL', '-u', dest='imageURL', default='%(name)s',
-                    help = "template for the card image download URLs"
+                    help = "template for the card image download URLs")
 
 
 def outputInit():
@@ -396,6 +396,7 @@ inputFilename = argspace.File
 outputFilename = argspace.outputName
 doDate = argspace.doDate
 doBackColor = argspace.colorPrompt
+imageURL = argspace.imageURL
 
 [cardsLoc, setCode] = outputInit() #conduct output initialization,
 # retrieving card info start location and set code into global variables
