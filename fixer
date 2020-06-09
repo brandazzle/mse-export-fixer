@@ -257,6 +257,8 @@ def secondaryInfo(info):
         info.colors = color(info.manacost, info.text)
         info.cmc = cmc(info.manacost)
         info.coloridentity = coloridentity(info.colors, info.text)
+    if 'Token' in info.type or 'Emblem' in info.type:
+        info.token = '1'
     return info
 
 
