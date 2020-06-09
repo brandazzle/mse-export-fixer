@@ -259,6 +259,8 @@ def secondaryInfo(info):
         info.coloridentity = coloridentity(info.colors, info.text)
     if 'Token' in info.type or 'Emblem' in info.type:
         info.token = '1'
+    if hasattr(info, 'text') and 'enters the battlefield tapped' in info.text:
+        info.cipt = '1'
     return info
 
 
