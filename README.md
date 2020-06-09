@@ -15,7 +15,7 @@ By way of background: the current version MSE Cockatrice export template "Cockat
 7. It doesn't add color identity (the `<coloridentity>` tag).
 8. It doesn't add card numbering within a set (the `num` option within the `<set ... >` tag of a card).
 
-Of these issues, the app currently fixes numbers 1 and 2. Rarities and numbering are totally absent from the files that MSE generates, and parsing token names from rules text is hard. I'll work the latter out when I can actually be arsed to do it. Probably.
+Of these issues, the app currently fixes 1, 2, 5, and 6. Rarities and numbering are totally absent from the files that MSE generates, and parsing token names from rules text is hard. I'll work the latter out when I can actually be arsed to do it. Probably.
 
 Note: You'll need to split the card images for the two sides of DFCs yourself, since MSE normally exports them as one file. Just be sure to name the images according to the names of the respective sides and put them in with the rest of your card images, and you should be good.
 
