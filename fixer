@@ -173,7 +173,8 @@ def simpName(name):
 Note that characters from other languages that are based on English letters
 will be removed, along with all punctuation besides '-'.
 """
-    remname = re.sub('[^A-Za-z0-9 -]+', '', name)
+    name = re.sub('[ëË]', '', name
+    remname = re.sub('[^A-Za-z0-9 %-]+', '', name)
     newname = re.sub(' ', '%20', remname)
     return newname
     
