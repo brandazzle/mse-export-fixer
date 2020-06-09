@@ -171,9 +171,9 @@ def simpName(name):
     """Remove special characters and replace spaces with '%20'.
 
 Note that characters from other languages that are based on English letters
-will be removed, along with all punctuation.
+will be removed, along with all punctuation besides '-'.
 """
-    remname = re.sub('[^A-Za-z0-9 ]+', '', name)
+    remname = re.sub('[^A-Za-z0-9 -]+', '', name)
     newname = re.sub(' ', '%20', remname)
     return newname
     
