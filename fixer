@@ -54,7 +54,7 @@ parser.add_argument('--verbose', dest='VERBOSE', action='store_true',
 parser.add_argument('--colorprompt', '-c', dest='colorPrompt', action='store_true',
                     help = "manually enter color for DFC backs (default copies front color)")
 # card image URL template
-parser.add_argument('--imageURL', '-u', dest='imageURL', default='%(name)s',
+parser.add_argument('--imageURL', '-u', dest='imageURL', default='$name',
                     help = "template for the card image download URLs")
 
 
